@@ -1,41 +1,41 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "artichoke3d.fullname" . }}-create-initial-admin-user
+  name: {{ include "ferritecms.fullname" . }}-create-initial-admin-user
   labels:
-    {{- include "artichoke3d.labels" . | nindent 4 }}
+    {{- include "ferritecms.labels" . | nindent 4 }}
 spec:
   template:
     metadata:
-      name: {{ include "artichoke3d.fullname" . }}-create-initial-admin-user
+      name: {{ include "ferritecms.fullname" . }}-create-initial-admin-user
       labels:
-        {{- include "artichoke3d.labels" . | nindent 8 }}
+        {{- include "ferritecms.labels" . | nindent 8 }}
     spec:
       containers:
       - name: create-initial-admin-user
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         command: ["/usr/local/bin/php", "artisan", "db:seed", "--class=InitialUserSeeder", "--no-interaction" ,"--force"]
         env:
-          {{ include "artichoke3d.commonEnvVars" . | nindent 10 }}
+          {{ include "ferritecms.commonEnvVars" . | nindent 10 }}
           - name: INITIAL_ADMIN_NAME
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-initial-admin-user-credentials{{ end }}
+                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-initial-admin-user-credentials{{ end }}
                 key: name
           - name: INITIAL_ADMIN_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-initial-admin-user-credentials{{ end }}
+                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-initial-admin-user-credentials{{ end }}
                 key: username
           - name: INITIAL_ADMIN_EMAIL
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-initial-admin-user-credentials{{ end }}
+                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-initial-admin-user-credentials{{ end }}
                 key: email
           - name: INITIAL_ADMIN_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-initial-admin-user-credentials{{ end }}
+                name: {{ if .Values.initialAdminUser.useExistingSecret }}{{ .Values.initialAdminUser.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-initial-admin-user-credentials{{ end }}
                 key: password
       restartPolicy: OnFailure
       dnsPolicy: ClusterFirst

@@ -2,9 +2,9 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "artichoke3d.fullname" . }}-task-scheduler
+  name: {{ include "ferritecms.fullname" . }}-task-scheduler
   labels:
-    {{- include "artichoke3d.labels" . | nindent 4 }}
+    {{- include "ferritecms.labels" . | nindent 4 }}
 spec:
   schedule: "*/1 * * * *"
   jobTemplate:
@@ -15,7 +15,7 @@ spec:
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          serviceAccountName: {{ include "artichoke3d.serviceAccountName" . }}
+          serviceAccountName: {{ include "ferritecms.serviceAccountName" . }}
           securityContext:
             {{- toYaml .Values.podSecurityContext | nindent 12 }}
           containers:
@@ -25,7 +25,7 @@ spec:
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               env:
-                {{ include "artichoke3d.commonEnvVars" . | nindent 16 }}
+                {{ include "ferritecms.commonEnvVars" . | nindent 16 }}
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
               command: ["php", "artisan", "schedule:run"]

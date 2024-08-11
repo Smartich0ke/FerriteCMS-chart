@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "artichoke3d.fullname" . }}-queue-worker
+  name: {{ include "ferritecms.fullname" . }}-queue-worker
   labels:
-    {{- include "artichoke3d.labels" . | nindent 4 }}
+    {{- include "ferritecms.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.queueWorker.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "artichoke3d.selectorLabels" . | nindent 6 }}
+      {{- include "ferritecms.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,20 +19,20 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "artichoke3d.selectorLabels" . | nindent 8 }}
+        {{- include "ferritecms.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "artichoke3d.serviceAccountName" . }}
+      serviceAccountName: {{ include "ferritecms.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
         - name: storage-volume
           {{ if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "artichoke3d.fullname" . }}-pvc{{ end }}
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "ferritecms.fullname" . }}-pvc{{ end }}
           {{ else }}
           emptyDir: {}
           {{ end }}
@@ -47,7 +47,7 @@ spec:
             - name: storage-volume
               mountPath: /var/www/html/storage/app
           env:
-            {{ include "artichoke3d.commonEnvVars" . | nindent 10 }}
+            {{ include "ferritecms.commonEnvVars" . | nindent 10 }}
           ports:
           livenessProbe:
             exec:

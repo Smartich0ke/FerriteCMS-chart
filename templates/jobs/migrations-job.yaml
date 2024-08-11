@@ -1,15 +1,15 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "artichoke3d.fullname" . }}-migrations
+  name: {{ include "ferritecms.fullname" . }}-migrations
   labels:
-    {{- include "artichoke3d.labels" . | nindent 4 }}
+    {{- include "ferritecms.labels" . | nindent 4 }}
 spec:
   template:
     metadata:
-      name: {{ include "artichoke3d.fullname" . }}-migrations
+      name: {{ include "ferritecms.fullname" . }}-migrations
       labels:
-        {{- include "artichoke3d.labels" . | nindent 8 }}
+        {{- include "ferritecms.labels" . | nindent 8 }}
     spec:
       containers:
       - name: run-migrations
@@ -19,57 +19,57 @@ spec:
           - name: APP_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.appKey.useExistingSecret }}{{ .Values.appKey.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}{{"-app-key"}}{{ end }}
+                name: {{ if .Values.appKey.useExistingSecret }}{{ .Values.appKey.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}{{"-app-key"}}{{ end }}
                 key: key
           - name: APP_ENV
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: APP_ENV
           - name: APP_DEBUG
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: APP_DEBUG
           - name: APP_URL
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: APP_URL
           - name: APP_NAME
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: APP_NAME
           - name: DB_CONNECTION
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: DB_CONNECTION
           - name: DB_HOST
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: DB_HOST
           - name: DB_PORT
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: DB_PORT
           - name: DB_DATABASE
             valueFrom:
               configMapKeyRef:
-                name: {{ include "artichoke3d.fullname" . }}-config
+                name: {{ include "ferritecms.fullname" . }}-config
                 key: DB_DATABASE
           - name: DB_USERNAME
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.database.auth.useExistingSecret }}{{ .Values.database.auth.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-db-credentials{{ end }}
+                name: {{ if .Values.database.auth.useExistingSecret }}{{ .Values.database.auth.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-db-credentials{{ end }}
                 key: username
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ if .Values.database.auth.useExistingSecret }}{{ .Values.database.auth.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-db-credentials{{ end }}
+                name: {{ if .Values.database.auth.useExistingSecret }}{{ .Values.database.auth.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-db-credentials{{ end }}
                 key: password
       restartPolicy: OnFailure
       dnsPolicy: ClusterFirst

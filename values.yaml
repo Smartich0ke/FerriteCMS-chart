@@ -12,7 +12,7 @@
 # - Steve Wilson, "The Harmony Codex"
 
 # @param replicaCount
-# Number of replicas to deploy for the Artichoke3D application.
+# Number of replicas to deploy for the ferritecms application.
 replicaCount: 3
 
 # @section image
@@ -82,10 +82,10 @@ database:
   externalDatabase: false # Flag to use an external database.
   auth:
     driver: "pgsql" # Database driver, e.g., pgsql, mysql.
-    host: "artichoke3d-postgres" # Database host.
+    host: "ferritecms-postgres" # Database host.
     port: "5432" # Database port.
-    database: "artichoke3d" # Database name.
-    username: "artichoke3d" # Database username.
+    database: "ferritecms" # Database name.
+    username: "ferritecms" # Database username.
     password: "blue-sky-mine" # Database password.
     useExistingSecret: false # Use existing secret for database credentials. Use the keys "username" and "password" in the secret.
     existingSecretName: "" # Existing secret name for database credentials.
@@ -97,9 +97,9 @@ postgresql:
   enabled: true # Enable or disable the chart.
   # Credentials here MUST match the database.auth settings above.
   auth:
-    username: artichoke3d # PostgreSQL username.
+    username: ferritecms # PostgreSQL username.
     password: "blue-sky-mine" # PostgreSQL password.
-    database: artichoke3d # PostgreSQL database.
+    database: ferritecms # PostgreSQL database.
   service:
     ports:
       postgres: 5432 # PostgreSQL service port.
@@ -220,7 +220,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: artichoke3d.test
+    - host: ferritecms.test
       paths:
         - path: /
           pathType: ImplementationSpecific
