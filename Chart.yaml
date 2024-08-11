@@ -1,5 +1,5 @@
 apiVersion: v2
-name: FerriteCMS
+name: ferritecms
 description: A Helm chart for Ferrite
 
 # A chart can be either an 'application' or a 'library' chart.

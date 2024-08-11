@@ -158,60 +158,6 @@ mail:
     address: "null" # From email address.
     name: "null" # From name.
 
-# @section oauth
-# OAuth configuration for providers like Google, GitHub, Facebook.
-# If using existing secrets, use the keys "client-id" and "client-secret" in the secret for all providers.
-oauth:
-  google:
-    clientId: "null" # Google client ID.
-    clientSecret: "null" # Google client secret.
-    useExistingSecret: false # Use existing secret for Google OAuth.
-    existingSecretName: "" # Existing secret name for Google OAuth.
-  github:
-    clientId: "null" # GitHub client ID.
-    clientSecret: "null" # GitHub client secret.
-    useExistingSecret: false # Use existing secret for GitHub OAuth.
-    existingSecretName: "" # Existing secret name for GitHub OAuth.
-  facebook:
-    clientId: "null" # Facebook client ID.
-    clientSecret: "null" # Facebook client secret.
-    useExistingSecret: false # Use existing secret for Facebook OAuth.
-    existingSecretName: "" # Existing secret name for Facebook OAuth.
-
-# @section cashier
-# Configuration for the cashier service.
-cashier:
-  currency: "AUD" # Currency for transactions.
-  locale: "en_AU" # Locale setting.
-  stripe:
-    key: "null" # Stripe key.
-    secretKey: "null" # Stripe secret key.
-    webhookSecret: "null" # Stripe webhook secret.
-    useExistingSecret: false # Use existing secret for Stripe.
-    existingSecretName: "" # Existing secret name for Stripe. Use the keys "stripe-key", "stripe-secret", and "stripe-webhook-secret" in the secret.
-
-# @section auspostApi
-# Configuration for the Australia Post API.
-auspostApi:
-  key: "null" # Australia Post API key.
-  useExistingSecret: false # Use existing secret for Australia Post API.
-  existingSecretName: "" # Existing secret name for Australia Post API. Use the key "api-key" in the secret.
-
-socials:
-  youtube: "null" # YouTube channel URL.
-  instagram: "null" # Instagram profile URL.
-  github: "null" # github profile URL.
-
-# @param cdnUrl
-# URL for the Content Delivery Network (CDN).
-cdnUrl: "null"
-
-# @section analytics
-# Configuration for analytics, e.g., Google Analytics.
-analytics:
-  google:
-    analyticsId: "null" # Google Analytics ID.
-
 # @section persistence
 # Configuration for persistent volume storage.
 persistence:

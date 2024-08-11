@@ -31,14 +31,3 @@ data:
   MAIL_ENCRYPTION: '{{ .Values.mail.encryption }}'
   MAIL_FROM_ADDRESS: '{{ .Values.mail.from.address }}'
   MAIL_FROM_NAME: '{{ .Values.mail.from.name }}'
-
-  GOOGLE_ANALYTICS_ID: '{{ .Values.analytics.google.analyticsId }}'
-
-  CASHIER_CURRENCY: '{{ .Values.cashier.currency }}'
-  CASHIER_CURRENCY_LOCALE: '{{ .Values.cashier.locale }}'
-
-  SOCIALS_YOUTUBE: '{{ .Values.socials.youtube }}'
-  SOCIALS_INSTAGRAM: '{{ .Values.socials.instagram }}'
-  SOCIALS_GITHUB: '{{ .Values.socials.github }}'
-
-  IMAGE_CDN_URL: '{{ .Values.cdnUrl }}'
