@@ -1,0 +1,80 @@
+{{ if .Values.queueWorker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "artichoke3d.fullname" . }}-queue-worker
+  labels:
+    {{- include "artichoke3d.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.queueWorker.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "artichoke3d.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "artichoke3d.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "artichoke3d.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: storage-volume
+          {{ if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "artichoke3d.fullname" . }}-pvc{{ end }}
+          {{ else }}
+          emptyDir: {}
+          {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}-queuw-worker
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["php", "artisan", "queue:work", "--tries=3", "--timeout=90"]
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /var/www/html/storage/app
+          env:
+            {{ include "artichoke3d.commonEnvVars" . | nindent 10 }}
+          ports:
+          livenessProbe:
+            exec:
+              command:
+              - pgrep
+              - php
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+              - pgrep
+              - php
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{ end }}

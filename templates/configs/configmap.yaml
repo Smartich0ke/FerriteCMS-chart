@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "artichoke3d.fullname" . }}-config
+data:
+  APP_NAME: '{{ .Values.appName }}'
+  APP_ENV: '{{ .Values.appEnv }}'
+  APP_DEBUG: '{{ .Values.appDebug }}'
+  APP_URL: '{{ .Values.appUrl }}'
+
+  LOG_CHANNEL: '{{ .Values.logChannel }}'
+  LOG_LEVEL: '{{ .Values.logLevel }}'
+
+  DB_CONNECTION: '{{ if .Values.database.externalDatabase }}{{ .Values.database.auth.driver }}{{ else }}{{ "pgsql" }}{{ end }}'
+  DB_HOST: '{{ if .Values.database.externalDatabase }}{{ .Values.database.auth.host }}{{ else }}{{ printf "%s-postgresql" .Release.Name | trunc 63 | trimSuffix "-" }}{{ end }}'
+  DB_PORT: '{{ if .Values.database.externalDatabase }}{{ .Values.database.auth.port }}{{ else }}{{ default "5432" .Values.postgresql.service.ports.postgresql }}{{ end }}'
+  DB_DATABASE: '{{ if .Values.database.externalDatabase }}{{ .Values.database.auth.database }}{{ else }}{{ .Values.postgresql.auth.database }}{{ end }}'
+  
+  CACHE_DRIVER: '{{ .Values.cache.driver }}'
+  SESSION_DRIVER: '{{ .Values.session.driver }}'
+  QUEUE_CONNECTION: '{{ .Values.queue.connection }}'
+
+  REDIS_CONNECTION: '{{ .Values.redis.driver }}'
+  REDIS_CLIENT: '{{ .Values.redis.driver }}'
+  REDIS_HOST: '{{ if .Values.redis.externalRedis }}{{ .Values.redis.auth.host }}{{ else }}{{ printf "%s-redischart-master" .Release.Name | trunc 63 | trimSuffix "-" }}{{ end }}'
+  REDIS_PORT: '{{ if .Values.redis.externalRedis }}{{ .Values.redis.auth.port }}{{ else }}{{ default "6379" .Values.redischart.service.ports.redis }}{{ end }}'
+
+  MAIL_MAILER: '{{ .Values.mail.driver }}'
+  MAIL_HOST: '{{ .Values.mail.host }}'
+  MAIL_PORT: '{{ .Values.mail.port }}'
+  MAIL_ENCRYPTION: '{{ .Values.mail.encryption }}'
+  MAIL_FROM_ADDRESS: '{{ .Values.mail.from.address }}'
+  MAIL_FROM_NAME: '{{ .Values.mail.from.name }}'
+
+  GOOGLE_ANALYTICS_ID: '{{ .Values.analytics.google.analyticsId }}'
+
+  CASHIER_CURRENCY: '{{ .Values.cashier.currency }}'
+  CASHIER_CURRENCY_LOCALE: '{{ .Values.cashier.locale }}'
+
+  SOCIALS_YOUTUBE: '{{ .Values.socials.youtube }}'
+  SOCIALS_INSTAGRAM: '{{ .Values.socials.instagram }}'
+  SOCIALS_GITHUB: '{{ .Values.socials.github }}'
+
+  IMAGE_CDN_URL: '{{ .Values.cdnUrl }}'

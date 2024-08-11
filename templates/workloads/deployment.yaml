@@ -1,0 +1,160 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "artichoke3d.fullname" . }}
+  labels:
+    {{- include "artichoke3d.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "artichoke3d.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "artichoke3d.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "artichoke3d.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: storage-volume
+          {{ if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "artichoke3d.fullname" . }}-pvc{{ end }}
+          {{ else }}
+          emptyDir: {}
+          {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /var/www/html/storage/app
+          env:
+            {{ include "artichoke3d.commonEnvVars" . | nindent 10 }}
+          - name: GITHUB_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.oauth.github.useExistingSecret }}{{ .Values.oauth.github.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-github-oauth-credentials{{ end }}
+                key: client-id
+          - name: GITHUB_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.oauth.github.useExistingSecret }}{{ .Values.oauth.github.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-github-oauth-credentials{{ end }}
+                key: client-secret
+          - name: GOOGLE_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.oauth.google.useExistingSecret }}{{ .Values.oauth.google.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-google-oauth-credentials{{ end }}
+                key: client-id
+          - name: GOOGLE_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.oauth.google.useExistingSecret }}{{ .Values.oauth.google.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-google-oauth-credentials{{ end }}
+                key: client-secret
+          - name: FACEBOOK_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.oauth.facebook.useExistingSecret }}{{ .Values.oauth.facebook.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-facebook-oauth-credentials{{ end }}
+                key: client-id
+          - name: FACEBOOK_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.oauth.facebook.useExistingSecret }}{{ .Values.oauth.facebook.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-facebook-oauth-credentials{{ end }}
+                key: client-secret
+          - name: GOOGLE_ANALYTICS_ID
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "artichoke3d.fullname" . }}-config
+                key: GOOGLE_ANALYTICS_ID
+          - name: CASHIER_CURRENCY
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "artichoke3d.fullname" . }}-config
+                key: CASHIER_CURRENCY
+          - name: CASHIER_CURRENCY_LOCALE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "artichoke3d.fullname" . }}-config
+                key: CASHIER_CURRENCY_LOCALE
+          - name: STRIPE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.cashier.stripe.useExistingSecret }}{{ .Values.cashier.stripe.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-stripe-credentials{{ end }}
+                key: stripe-key
+          - name: STRIPE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.cashier.stripe.useExistingSecret }}{{ .Values.cashier.stripe.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-stripe-credentials{{ end }}
+                key: stripe-secret
+          - name: STRIPE_WEBHOOK_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.cashier.stripe.useExistingSecret }}{{ .Values.cashier.stripe.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-stripe-credentials{{ end }}
+                key: stripe-webhook-secret
+          - name: AUSPOST
+            valueFrom:
+              secretKeyRef:
+                name: {{ if .Values.auspostApi.useExistingSecret }}{{ .Values.auspostApi.existingSecretName }}{{ else }}{{ include "artichoke3d.fullname" . }}-auspost-api-credentials{{ end }}
+                key: api-key
+          - name: SOCIALS_YOUTUBE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "artichoke3d.fullname" . }}-config
+                key: SOCIALS_YOUTUBE
+          - name: SOCIALS_INSTAGRAM
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "artichoke3d.fullname" . }}-config
+                key: SOCIALS_INSTAGRAM
+          - name: SOCIALS_GITHUB
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "artichoke3d.fullname" . }}-config
+                key: SOCIALS_GITHUB
+          - name: IMAGE_CDN_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "artichoke3d.fullname" . }}-config
+                key: IMAGE_CDN_URL
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
