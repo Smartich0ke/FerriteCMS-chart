@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "ferritecms.labels" . | nindent 4 }}
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "*/5 * * * *"
   jobTemplate:
     spec:
       template:
