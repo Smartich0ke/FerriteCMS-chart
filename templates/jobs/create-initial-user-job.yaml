@@ -15,6 +15,9 @@ spec:
       - name: create-initial-admin-user
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         command: ["/usr/local/bin/php", "artisan", "db:seed", "--class=InitialUserSeeder", "--no-interaction" ,"--force"]
+        envFrom:
+        - configMapRef:
+            name: {{ include "ferritecms.fullname" . }}-config
         env:
           {{ include "ferritecms.commonEnvVars" . | nindent 10 }}
           - name: INITIAL_ADMIN_NAME
