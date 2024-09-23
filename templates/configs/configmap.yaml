@@ -31,3 +31,7 @@ data:
   MAIL_ENCRYPTION: '{{ .Values.mail.encryption }}'
   MAIL_FROM_ADDRESS: '{{ .Values.mail.from.address }}'
   MAIL_FROM_NAME: '{{ .Values.mail.from.name }}'
+
+  AUTHENTIK_ENABLED: '{{ .Values.oauth.authentik.enabled }}'
+  AUTHENTIK_BASE_URL: '{{ .Values.oauth.authentik.baseUrl }}'
+  AUTHENTIK_ICON: '{{ .Values.oauth.authentik.iconUrl }}'

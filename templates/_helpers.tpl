@@ -62,80 +62,11 @@ Create the name of the service account to use
 {{- end }}
 
 {{- define "ferritecms.commonEnvVars" -}}
-- name: RUN_MIGRATIONS
-  value: "false"
-- name: GENERATE_KEY
-  value: "false"
 - name: APP_KEY
   valueFrom:
     secretKeyRef:
       name: {{ if .Values.appKey.useExistingSecret }}{{ .Values.appKey.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-app-key{{ end }}
       key: key
-- name: APP_ENV
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: APP_ENV
-- name: APP_DEBUG
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: APP_DEBUG
-- name: APP_URL
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: APP_URL
-- name: APP_NAME
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: APP_NAME
-- name: LOG_LEVEL
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: LOG_LEVEL
-- name: LOG_CHANNEL
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: LOG_CHANNEL
-- name: CACHE_DRIVER
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: CACHE_DRIVER
-- name: QUEUE_CONNECTION
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: QUEUE_CONNECTION
-- name: SESSION_DRIVER
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: SESSION_DRIVER
-- name: DB_CONNECTION
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: DB_CONNECTION
-- name: DB_HOST
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: DB_HOST
-- name: DB_PORT
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: DB_PORT
-- name: DB_DATABASE
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: DB_DATABASE
 - name: DB_USERNAME
   valueFrom:
     secretKeyRef:
@@ -146,41 +77,11 @@ Create the name of the service account to use
     secretKeyRef:
       name: {{ if .Values.database.auth.useExistingSecret }}{{ .Values.database.auth.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-db-credentials{{ end }}
       key: password
-- name: REDIS_CONNECTION
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: REDIS_CONNECTION
-- name: REDIS_HOST
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: REDIS_HOST
-- name: REDIS_PORT
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: REDIS_PORT
 - name: REDIS_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ if .Values.redis.auth.useExistingSecret }}{{ .Values.redis.auth.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-redis-credentials{{ end }}
       key: password
-- name: MAIL_MAILER
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: MAIL_MAILER
-- name: MAIL_HOST
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: MAIL_HOST
-- name: MAIL_PORT
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: MAIL_PORT
 - name: MAIL_USERNAME
   valueFrom:
     secretKeyRef:
@@ -191,19 +92,16 @@ Create the name of the service account to use
     secretKeyRef:
       name: {{ if .Values.mail.useExistingSecret }}{{ .Values.mail.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-mail-credentials{{ end }}
       key: password
-- name: MAIL_ENCRYPTION
+{{- if .Values.authentik.enabled }}
+- name: AUTHENTIK_CLIENT_ID
   valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: MAIL_ENCRYPTION
-- name: MAIL_FROM_ADDRESS
+    secretKeyRef:
+      name: {{ if .Values.authentik.useExistingSecret }}{{ .Values.authentik.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-authentik-credentials{{ end }}
+      key: client-id
+- name: AUTHENTIK_CLIENT_SECRET
   valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: MAIL_FROM_ADDRESS
-- name: MAIL_FROM_NAME
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "ferritecms.fullname" . }}-config
-      key: MAIL_FROM_NAME
+    secretKeyRef:
+      name: {{ if .Values.authentik.useExistingSecret }}{{ .Values.authentik.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-authentik-credentials{{ end }}
+      key: client-secret
+{{- end }}
 {{- end }}

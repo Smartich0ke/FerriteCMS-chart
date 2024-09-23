@@ -45,6 +45,9 @@ spec:
           volumeMounts:
             - name: storage-volume
               mountPath: /var/www/html/storage/app
+          envFrom:
+          - configMapRef:
+              name: {{ include "ferritecms.fullname" . }}-config
           env:
             {{ include "ferritecms.commonEnvVars" . | nindent 10 }}
           ports:

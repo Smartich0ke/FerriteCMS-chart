@@ -24,8 +24,11 @@ spec:
                 {{- toYaml .Values.securityContext | nindent 16 }}
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
+              envFrom:
+              - configMapRef:
+                  name: {{ include "ferritecms.fullname" . }}-config
               env:
-                {{ include "ferritecms.commonEnvVars" . | nindent 16 }}
+                {{ include "ferritecms.commonEnvVars" . | nindent 10 }}
               resources:
                 {{- toYaml .Values.resources | nindent 16 }}
               command: ["php", "artisan", "schedule:run"]

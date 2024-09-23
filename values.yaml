@@ -120,6 +120,16 @@ session:
 queue:
   connection: "redis" # Queue connection, e.g., redis, sqs.
 
+oauth:
+  authentik:
+    enabled: false # Enable or disable Authentik OAuth.
+    baseUrl: "" # Authentik base URL.
+    useExistingSecret: false # Use existing secret for OAuth credentials.
+    existingSecretName: "" # Existing secret name for OAuth credentials. Use the keys "client-id" and "client-secret" in the secret.
+    clientId: "" # Authentik OAuth client ID.
+    clientSecret: "" # Authentik OAuth client secret.
+    iconUrl: "" # URL to the OAuth provider's icon.
+
 # @section redis
 # Redis connection settings.
 redis:
