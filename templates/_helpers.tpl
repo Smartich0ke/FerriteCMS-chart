@@ -92,16 +92,16 @@ Create the name of the service account to use
     secretKeyRef:
       name: {{ if .Values.mail.useExistingSecret }}{{ .Values.mail.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-mail-credentials{{ end }}
       key: password
-{{- if .Values.authentik.enabled }}
+{{- if .Values.oauth.authentik.enabled }}
 - name: AUTHENTIK_CLIENT_ID
   valueFrom:
     secretKeyRef:
-      name: {{ if .Values.authentik.useExistingSecret }}{{ .Values.authentik.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-authentik-credentials{{ end }}
+      name: {{ if .Values.oauth.authentik.useExistingSecret }}{{ .Values.oauth.authentik.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-authentik-credentials{{ end }}
       key: client-id
 - name: AUTHENTIK_CLIENT_SECRET
   valueFrom:
     secretKeyRef:
-      name: {{ if .Values.authentik.useExistingSecret }}{{ .Values.authentik.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-authentik-credentials{{ end }}
+      name: {{ if .Values.oauth.authentik.useExistingSecret }}{{ .Values.oauth.authentik.existingSecretName }}{{ else }}{{ include "ferritecms.fullname" . }}-authentik-credentials{{ end }}
       key: client-secret
 {{- end }}
 {{- end }}
