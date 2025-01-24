@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "ferritecms.fullname" . }}-migrations
+  name: {{ include "ferritecms.fullname" . }}-migrations-{{ randAlphaNum 5 | lower }}
   labels:
     {{- include "ferritecms.labels" . | nindent 4 }}
 spec:
   template:
     metadata:
-      name: {{ include "ferritecms.fullname" . }}-migrations
+      name: {{ include "ferritecms.fullname" . }}-migrations-{{ randAlphaNum 5 | lower }}
       labels:
         {{- include "ferritecms.labels" . | nindent 8 }}
     spec:

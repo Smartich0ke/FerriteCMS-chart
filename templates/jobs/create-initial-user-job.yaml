@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "ferritecms.fullname" . }}-create-initial-admin-user
+  name: {{ include "ferritecms.fullname" . }}-create-initial-admin-user-{{ randAlphaNum 5 | lower }}
   labels:
     {{- include "ferritecms.labels" . | nindent 4 }}
 spec:
   template:
     metadata:
-      name: {{ include "ferritecms.fullname" . }}-create-initial-admin-user
+      name: {{ include "ferritecms.fullname" . }}-create-initial-admin-user-{{ randAlphaNum 5 | lower }}
       labels:
         {{- include "ferritecms.labels" . | nindent 8 }}
     spec:
